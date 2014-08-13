@@ -11,9 +11,9 @@
 //  incorporated herein by reference.
 //
 
-import "CameraSession.h"
+import "MTCameraSession.h"
 
-@interface CameraSession () {
+@interface MTCameraSession () {
     AVCaptureSession *_session;
     AVCaptureDevice *_camera;
     AVCaptureDeviceInput *_videoInputStream;
@@ -25,10 +25,10 @@ import "CameraSession.h"
 
 @end
 #pragma mark --
-#pragma mark CameraSession Implementation
+#pragma mark MTCameraSession Implementation
 #pragma mark --
 
-@implementation CameraSession
+@implementation MTCameraSession
 
 #pragma mark --
 #pragma mark Object lifecycle
