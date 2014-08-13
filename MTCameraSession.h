@@ -29,22 +29,22 @@
 ///
 - (id)initWithDisplayCanvas:(UIView<MTVideoCanvasP>*)displayCanvas;
 ///
-/// Call thuis method to initiate an image caprture "session".  This will direct the video
+/// Call this method to initiate an image caprture "session".  This will direct the video
 /// output of the camera to the specified displayCanvas.viewFinder specified in the
 /// initWithDisplayCanvas method.
 ///
 - (void)startSession;
-
 ///
 /// Call this method after initiating a capture session using the [instance startSession] method.
 /// If an error is retuned, the imageData argumaent will be nil, otherwise the imageData argument will
 /// contain the .jpeg data captured from the current canvas.viewFinder.
 ///
 - (void)captureStillJPEG:(void(^)(NSData* imageData, NSError *error))handler;
-
+///
 /// Call this method to end a camera capture session.  This method should be called if the capture
 /// session is restarted, aborted or over for any other reason.  All necessary teardown of the
-//  camera session is performed here.
+/// camera session is performed here.
+///
 - (void)stopSession;
 
 @end
