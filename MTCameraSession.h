@@ -36,8 +36,8 @@
 - (void)startSession;
 ///
 /// Call this method after initiating a capture session using the [instance startSession] method.
-/// If an error is retuned, the imageData argumaent will be nil, otherwise the imageData argument will
-/// contain the .jpeg data captured from the current canvas.viewFinder.
+/// If an error is returned, the imageData argumaent will be nil, otherwise the imageData argument will
+/// contain the .jpeg data captured from the current displayCanvas.viewFinder.
 ///
 - (void)captureStillJPEG:(void(^)(NSData* imageData, NSError *error))handler;
 ///
