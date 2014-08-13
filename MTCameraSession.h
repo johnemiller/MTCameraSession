@@ -21,7 +21,7 @@
 
 @end
 
-@interface CameraSession : NSObject<AVCaptureVideoDataOutputSampleBufferDelegate>
+@interface MTCameraSession : NSObject<AVCaptureVideoDataOutputSampleBufferDelegate>
 ///
 /// Preferred Initializer.  Pass the MTVideoCanvasP compliant view which implements
 /// a sublayer that conforms to the MTVideoCanvas protocol.  This would normally
