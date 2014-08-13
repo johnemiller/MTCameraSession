@@ -2,6 +2,8 @@
 //  MTCameraSession.h
 //  Camera Capture Session
 //
+//  https://github.com/johnemiller/MTCameraSession
+//
 //  Created by John Miller on 12/31/12.
 //
 //  Copyright 2013, Miltech Consulting
