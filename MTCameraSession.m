@@ -105,7 +105,9 @@ import "MTCameraSession.h"
                 }
             }
             if (videoConnection)
+            {
                 break;
+            }
         }
         
         [_stillOutput captureStillImageAsynchronouslyFromConnection:videoConnection
@@ -114,13 +116,19 @@ import "MTCameraSession.h"
              NSData* imageData = nil;
 
              if (error)
+             {
                  NSLog(@"Error capturing camera image: %@", error);
-
+             }
+             
              if (imageSampleBuffer)
+             {
                  imageData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageSampleBuffer];
+             }
 
              if ([NSThread isMainThread])
+             {
                  handler(imageData, error);
+             }
              else
              {
                  dispatch_async(dispatch_get_main_queue(), ^{
