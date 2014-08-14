@@ -33,7 +33,7 @@
 ///
 - (id)initWithDisplayCanvas:(UIView<MTVideoCanvasP>*)displayCanvas bitrate:(NSString *)avCaptureSessionPreset;
 ///
-/// Call this method to initiate an image caprture "session". This will direct the video
+/// Call this method to initiate an image capture "session". This will direct the video
 /// output of the camera to the specified displayCanvas.viewFinder specified in the
 /// initWithDisplayCanvas method.
 ///
