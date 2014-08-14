@@ -58,7 +58,7 @@ import "MTCameraSession.h"
         // Set the video output to store frame in BGRA (better performance)
         NSString* key = (NSString*)kCVPixelBufferPixelFormatTypeKey;
         NSNumber* value = [NSNumber numberWithUnsignedInt:kCVPixelFormatType_32BGRA];
-        NSDictionary* videoSettings = @{value : key};
+        NSDictionary* videoSettings = @{key : value};
         [_videoOutput setVideoSettings:videoSettings];
         [_videoOutput setSampleBufferDelegate:self queue:app_get_process_queue()];
         [_session addOutput:_videoOutput];
