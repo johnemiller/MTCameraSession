@@ -1,19 +1,20 @@
 //
-//  MTCameraSession.m
-//  Camera Capture Session
+// MTCameraSession.m
+// Camera Capture Session
 //
-//  https://github.com/johnemiller/MTCameraSession
+// https://github.com/johnemiller/MTCameraSession
 //
-//  Created by John Miller on 12/31/12.
+// Created by John Miller on 12/31/12.
 //
-//  Copyright 2013, Miltech Consulting
+// Copyright 2013, Miltech Consulting
 //
-//  This file is part of MTCameraSession. This software may be used and distributed
-//  according to the terms of the GNU General Public License version 2,
-//  incorporated herein by reference.
+// This file is part of MTCameraSession. This software may be used and distributed
+// according to the terms of the GNU General Public License version 2,
+// incorporated herein by reference.
 //
+#import "MTCameraSession.h"
 
-import "MTCameraSession.h"
+static dispatch_queue_t sMTVideoQueue;
 
 @interface MTCameraSession () {
     AVCaptureSession *_session;
@@ -24,8 +25,8 @@ import "MTCameraSession.h"
     UIView<MTVideoCanvasP>* _canvas;
     BOOL _sessionTerminated;
 }
-
 @end
+
 #pragma mark --
 #pragma mark MTCameraSession Implementation
 #pragma mark --
@@ -36,9 +37,17 @@ import "MTCameraSession.h"
 #pragma mark Object lifecycle
 #pragma mark --
 
++ (void)initialize;
+{
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sMTVideoQueue = dispatch_queue_create("mtcamera.video.queue", NULL);
+    });
+}
+
 - (id)initWithDisplayCanvas:(UIView<MTVideoCanvasP>*)displayCanvas
 {
-    NSParameterAssert(displayCanvas!=nil && displayCanvas.viewFinder!=nil);
+    NSParameterAssert(displayCanvas != nil && displayCanvas.viewFinder != nil);
     self = [super init];
     if (self)
     {
@@ -60,7 +69,7 @@ import "MTCameraSession.h"
         NSNumber* value = [NSNumber numberWithUnsignedInt:kCVPixelFormatType_32BGRA];
         NSDictionary* videoSettings = @{key : value};
         [_videoOutput setVideoSettings:videoSettings];
-        [_videoOutput setSampleBufferDelegate:self queue:app_get_process_queue()];
+        [_videoOutput setSampleBufferDelegate:self queue:sMTVideoQueue];
         [_session addOutput:_videoOutput];
         _stillOutput = [[AVCaptureStillImageOutput alloc] init];
         NSDictionary *outputSettings = @{AVVideoCodecJPEG : AVVideoCodecKey};
@@ -69,28 +78,23 @@ import "MTCameraSession.h"
     }
     return self;
 }
-
 - (void)dealloc
 {
     [_session stopRunning];
 }
-
 #pragma mark --
 #pragma mark Public methods
 #pragma mark --
-
 - (void)startSession
 {
     _sessionTerminated = NO;
     [_session startRunning];
 }
-
 - (void)stopSession
 {
     _sessionTerminated = YES;
     [_session stopRunning];
 }
-
 - (void)captureStillJPEG:(void(^)(NSData* imageData, NSError *error))handler
 {
     if (_canvas)
@@ -111,46 +115,39 @@ import "MTCameraSession.h"
                 break;
             }
         }
-        
         [_stillOutput captureStillImageAsynchronouslyFromConnection:videoConnection
                                                   completionHandler: ^(CMSampleBufferRef imageSampleBuffer, NSError *error)
-         {
-             NSData* imageData = nil;
-
-             if (error)
-             {
-                 NSLog(@"Error capturing camera image: %@", error);
-             }
-             
-             if (imageSampleBuffer)
-             {
-                 imageData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageSampleBuffer];
-             }
-
-             if ([NSThread isMainThread])
-             {
-                 handler(imageData, error);
-             }
-             else
-             {
-                 dispatch_async(dispatch_get_main_queue(), ^{
-                     handler(imageData, error);
-                 });
-             }
-         }];
+        {
+            NSData* imageData = nil;
+            if (error)
+            {
+                NSLog(@"Error capturing camera image: %@", error);
+            }
+            if (imageSampleBuffer)
+            {
+                imageData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageSampleBuffer];
+            }
+            if ([NSThread isMainThread])
+            {
+                handler(imageData, error);
+            }
+            else
+            {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    handler(imageData, error);
+                });
+            }
+        }];
     }
 }
-
 #pragma mark --
 #pragma mark <AVCaptureVideoDataOutputSampleBufferDelegate> methods
 #pragma mark --
-
 - (void)captureOutput:(AVCaptureOutput *)captureOutput
 didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
        fromConnection:(AVCaptureConnection *)connection
 {
-    // NOTE:  we have no processing of video frames to do here...
+    // NOTE: we have no processing of video frames to do here...
     // the AVCaptureStillImageOutput will handle everything w/ respect to getting the still image from the preview layer.
 }
-
 @end
