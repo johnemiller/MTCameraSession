@@ -45,16 +45,18 @@ static dispatch_queue_t sMTVideoQueue;
     });
 }
 
-- (id)initWithDisplayCanvas:(UIView<MTVideoCanvasP>*)displayCanvas
+- (id)initWithDisplayCanvas:(UIView<MTVideoCanvasP>*)displayCanvas bitrate:(NSString *)avCaptureSessionPreset;
 {
     NSParameterAssert(displayCanvas != nil && displayCanvas.viewFinder != nil);
+    NSParameterAssert(avCaptureSessionPreset != nil);
+    
     self = [super init];
     if (self)
     {
         _canvas = displayCanvas;
         //set up the AV session
         _session = [[AVCaptureSession alloc] init];
-        [_session setSessionPreset:AVCaptureSessionPresetMedium];
+        [_session setSessionPreset:avCaptureSessionPreset];
         // set the session on the canvas
         [_canvas.viewFinder setSession:_session];
         // set up the video camera
